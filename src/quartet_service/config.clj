@@ -88,6 +88,13 @@
         fs-rootdir (or fs-rootdir "")]
     fs-rootdir))
 
+(defn make-minio-link
+  "Replace an absolute path with minio link."
+  [abspath]
+  (let [minio-rootdir (get-minio-rootdir env)
+        trimmed (str (clj-str/replace minio-rootdir #"/$" "") "/")]
+    (clj-str/replace abspath (re-pattern trimmed) "minio://")))
+
 (defn check-fs-root!
   [env]
   (let [fs-rootdir (get-minio-rootdir env)

@@ -17,7 +17,7 @@
                  [danlentz/clj-uuid "0.1.9"]
                  [com.github.yjcyxky/local-fs "0.1.5"]
                  [com.github.yjcyxky/remote-fs "0.2.2"]
-                 [com.github.yjcyxky/tservice-core "0.2.0"]
+                 [com.github.yjcyxky/tservice-core "0.2.2"]
                  [babashka/babashka.curl "0.0.3"]
                  [selmer "1.12.27"]
 

@@ -3,7 +3,8 @@
             [tservice-core.core :as plugin-sys]
             [clojure.tools.logging :as log]
             [mount.core :as mount]
-            [quartet-service.config :refer [env]]))
+            [quartet-service.config :refer [env make-minio-link]]
+            [quartet-service.db.handler :as db-handler]))
 
 ;; Connect remote filesystem (such as oss, minio)
 (defn connect-fs!
@@ -32,6 +33,9 @@
     (plugin-sys/setup-custom-plugin-dir (:plugin-rootdir env))
     (plugin-sys/setup-custom-workdir-root (:workdir env))
     (plugin-sys/setup-plugin-configs (:plugins env))
+    (plugin-sys/setup-custom-fns db-handler/create-task! 
+                                 db-handler/update-task!
+                                 make-minio-link)
     (plugin-sys/start-plugins!))
   :stop
   (plugin-sys/stop-plugins!))

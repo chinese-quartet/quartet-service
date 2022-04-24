@@ -36,11 +36,12 @@
 (s/def ::plugin-type string?)
 (s/def ::response (s/or :map map? :string string?))
 (s/def ::started-time integer?)
-(s/def ::finished-time integer?)
+(s/def ::finished-time (s/nilable integer?))
+(s/def ::owner string?)
 (s/def ::status string?)
 (s/def ::percentage integer?)
 (s/def ::task (s/keys :req-un [::name ::plugin-name ::plugin-version ::plugin-type]
-                      :opt-un [::description ::payload ::response ::finished-time ::started-time ::status ::percentage]))
+                      :opt-un [::id ::description ::payload ::owner ::response ::finished-time ::started-time ::status ::percentage]))
 
 ;; ----------------------------- Function -------------------------------
 (defn- filter-query-map
@@ -167,10 +168,9 @@
   (db/count-tasks (make-query-map where-map)))
 
 (defn update-task!
-  [id record]
-  {:pre [(s/valid? ::id id)
-         (s/valid? map? record)]}
-  (update-entity! db/update-task! id record))
+  [record]
+  {:pre [(s/valid? map? record)]}
+  (update-entity! db/update-task! (:id record) (dissoc record :id)))
 
 (defn delete-task!
   [id]
@@ -178,39 +178,40 @@
   (db/delete-task! {:id id}))
 
 (defn create-task!
-  [& {:keys [id
-             name
-             description
-             payload
-             owner
-             plugin-name
-             plugin-version
-             plugin-type
-             response
-             started-time
-             finished-time
-             status
-             percentage]
-      :or {id (util/uuid)
-           description ""
-           payload {}
-           response {}
-           started-time (util/time->int (util/now))
-           finished-time nil
-           status "Started"
-           percentage 0}
-      :as task}]
+  [{:keys [id
+           name
+           description
+           payload
+           owner
+           plugin-name
+           plugin-version
+           plugin-type
+           response
+           started-time
+           finished-time
+           status
+           percentage]
+    :or {id (util/uuid)
+         description ""
+         payload {}
+         response {}
+         started-time (util/time->int (util/now))
+         finished-time nil
+         status "Started"
+         percentage 0}
+    :as task}]
   {:pre [(s/valid? ::task task)]
    :post [(s/valid? ::id %)]}
+  (println "Create Task: %s" task)
   (db/create-task! {:id id
                     :name name
                     :description description
-                    :payload payload
+                    :payload (json/write-str payload)
                     :owner owner
                     :plugin_name plugin-name
                     :plugin_version plugin-version
                     :plugin_type plugin-type
-                    :response response
+                    :response (json/write-str response)
                     :started_time started-time
                     :finished_time finished-time
                     :status status
