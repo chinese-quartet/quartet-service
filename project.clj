@@ -1,4 +1,4 @@
-(defproject quartet-service "0.1.0"
+(defproject quartet-service "0.1.1"
   :description "Backend service for chinese quartet."
   :url "https://github.com/chinese-quartet/quartet-service"
 
@@ -16,7 +16,7 @@
                  ;; Utility
                  [danlentz/clj-uuid "0.1.9"]
                  [com.github.yjcyxky/local-fs "0.1.5"]
-                 [com.github.yjcyxky/remote-fs "0.2.2"]
+                 [com.github.yjcyxky/remote-fs "0.2.5"]
                  [com.github.yjcyxky/tservice-core "0.2.2"]
                  [babashka/babashka.curl "0.0.3"]
                  [selmer "1.12.27"]
